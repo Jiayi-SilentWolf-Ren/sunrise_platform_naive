@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--suppress ALL -->
+<mapper namespace="team.sunrise.managementplatform.mapper.UserLoginMapper">
+
+    <resultMap id="userMap" type="team.sunrise.managementplatform.entity.UserLoginData">
+        <id column="uid" property="uid"></id>
+        <result column="username" property="username"></result>
+        <result column="telephone" property="telephone"></result>
+        <result column="mail" property="mail"></result>
+        <result column="age" property="age"></result>
+        <result column="sex" property="sex"></result>
+        <result column="department" property="department"></result>
+        <result column="signature" property="signature"></result>
+        <collection property="tasks" ofType="team.sunrise.managementplatform.entity.Task" javaType="arraylist">
+            <id column="uid" property="uid"></id>
+            <result column="content" property="content"></result>
+            <result column="startTime" property="startTime"></result>
+            <result column="endTime" property="endTime"></result>
+        </collection>
+    </resultMap>
+
+    <select id="selectByPwd" parameterType="String" resultMap="userMap">
+        SELECT
+                public.uid,
+                public.username,
+                public.telephone,
+                public.mail,
+                public.age,
+                public.sex,
+                public.department,
+                public.signature,
+                task.content,
+                task.s_time,
+                task.e_time
+        FROM
+                v_user_login_info login,
+                v_user_public_info public,
+                t_user_task task
+        WHERE
+                task.uid=public.uid
+                AND public.uid=login.uid
+                AND login.password=#{password}
+    </select>
+</mapper>
